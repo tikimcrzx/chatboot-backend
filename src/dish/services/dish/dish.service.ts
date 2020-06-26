@@ -20,11 +20,25 @@ export class DishService {
   }
 
   async findAll(): Promise<Dish[]> {
-    return await this._dishModel.find().exec();
+    return await this._dishModel
+      .find()
+      .populate({
+        path: 'ingredients',
+        model: 'Ingredient',
+        select: 'ingredient',
+      })
+      .exec();
   }
 
   async findById(_id: string): Promise<Dish> {
-    const dish: Dish = await this._dishModel.findById(_id);
+    const dish: Dish = await this._dishModel
+      .findById(_id)
+      .populate({
+        path: 'ingredients',
+        model: 'Ingredient',
+        select: 'ingredient',
+      })
+      .exec();
     if (!dish) throw new NotFoundException(`dish id = ${_id} not found`);
     return dish;
   }
